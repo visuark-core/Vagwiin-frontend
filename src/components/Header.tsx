@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Phone, MessageCircle, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -35,6 +35,8 @@ const Header: React.FC<HeaderProps> = ({ isMobileMenuOpen, setIsMobileMenuOpen }
   const handleWhatsApp = () => {
     window.open('https://wa.me/919461991604', '_blank');
   };
+
+  const [showMobileServices, setShowMobileServices] = useState(false);
 
   return (
     <header className="bg-gradient-to-b from-gray-900 to-black shadow-sm border-b border-gray-800 sticky top-0 z-50 w-full py-[1px]">
@@ -95,18 +97,49 @@ const Header: React.FC<HeaderProps> = ({ isMobileMenuOpen, setIsMobileMenuOpen }
           <div className="md:hidden border-t border-gray-800 py-4 bg-gray-900 animate-slideDown">
             <div className="space-y-2">
               {navigationItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`block w-full text-left px-3 py-2 text-base font-medium rounded-md transition-colors duration-200 ${
-                    location.pathname === item.path
-                      ? 'text-blue-400 bg-gray-800'
-                      : 'text-gray-200 hover:text-blue-400 hover:bg-gray-800'
-                  }`}
-                >
-                  {item.label}
-                </Link>
+                item.subItems ? (
+                  <div key={item.label}>
+                    <button
+                      onClick={() => setShowMobileServices((prev) => !prev)}
+                      className={`block w-full text-left px-3 py-2 text-base font-medium rounded-md transition-colors duration-200 focus:outline-none ${
+                        showMobileServices ? 'text-blue-400 bg-gray-800' : 'text-gray-200 hover:text-blue-400 hover:bg-gray-800'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                    {showMobileServices && (
+                      <div className="pl-4 mt-1">
+                        {item.subItems.map((sub) => (
+                          <Link
+                            key={sub.path}
+                            to={sub.path}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`block px-3 py-2 text-base rounded-md transition-colors duration-200 ${
+                              location.pathname === sub.path
+                                ? 'text-blue-400 bg-gray-800'
+                                : 'text-gray-200 hover:text-blue-400 hover:bg-gray-800'
+                            }`}
+                          >
+                            {sub.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`block w-full text-left px-3 py-2 text-base font-medium rounded-md transition-colors duration-200 ${
+                      location.pathname === item.path
+                        ? 'text-blue-400 bg-gray-800'
+                        : 'text-gray-200 hover:text-blue-400 hover:bg-gray-800'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                )
               ))}
             </div>
             <div className="flex space-x-2 mt-4 px-1">
